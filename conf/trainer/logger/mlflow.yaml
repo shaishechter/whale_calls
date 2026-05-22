@@ -1,0 +1,4 @@
+_target_: lightning.pytorch.loggers.MLFlowLogger
+
+experiment_name: whale_calls
+tracking_uri: mlruns

@@ -1,0 +1,4 @@
+max_epochs: 100
+accelerator: auto
+devices: 1
+precision: 32-true

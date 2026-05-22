@@ -1,0 +1,8 @@
+defaults:
+  - datamodule: default
+  - model/arch: default
+  - model/scheduler: default
+  - trainer: default
+  - trainer/logger: mlflow
+  - trainer/callbacks: default
+  - _self_
