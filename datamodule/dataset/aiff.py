@@ -25,8 +25,10 @@ class AiffDataset(Dataset):
         data, sample_rate = sf.read(self.paths[idx], always_2d=True)
         waveform = torch.from_numpy(data.T).float()
         if self.train:
-            return waveform, self.labels[idx]
-        return waveform
+            return {"feature": waveform, "label": self.labels[idx]}
+        return {
+            "feature": waveform,
+        }
 
 
 if __name__ == "__main__":
