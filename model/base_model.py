@@ -8,6 +8,8 @@ import lightning as L
 import logging
 import time
 
+from model.aug.base import BaseAugmentation
+
 logger = logging.getLogger(__file__)
 
 
