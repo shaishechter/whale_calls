@@ -23,3 +23,7 @@ data/
 .DS_Store
 *.env
 .vscode/
+
+# Microsoft unlim repo
+unlim/
+model/artifacts

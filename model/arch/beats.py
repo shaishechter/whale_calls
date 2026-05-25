@@ -1,30 +1,74 @@
+import sys
 import torch
 import torch.nn as nn
+from huggingface_hub import hf_hub_download
+from pathlib import Path
 
 # Requires BEATs source vendored from https://github.com/microsoft/unilm/tree/master/beats
 #
 # Setup steps:
 #   1. Copy BEATs.py, backbone.py, and modules.py from the repo above into this project.
-#   2. Download a pretrained checkpoint, e.g. BEATs_iter3_plus_AS2M.pt:
-#      https://valle.blob.core.windows.net/share/BEATs/BEATs_iter3_plus_AS2M.pt
-#   3. Pass the checkpoint path when instantiating BEATsClassifier (see __main__ below).
+#   2. Instantiate BEATsClassifier with a checkpoint name, e.g. BEATsClassifier("iter3").
+#      The checkpoint will be downloaded automatically to model/artifacts/ if not present.
 #
 # The pretrained model expects 16 kHz mono waveforms. If your data is at a different
 # sample rate, apply ResampleAugmentation (model/aug/resample.py) before this model.
-from beats import BEATs, BEATsConfig
+
+UNILM_PATH = Path(__file__).parent.parent.parent / "unilm"
+BEATS_PATH = UNILM_PATH / "beats"
+if not UNILM_PATH.exists():
+    raise ImportError(
+        "Microsoft unilm repo not found, please clone from https://github.com/microsoft/unilm.git"
+    )
+
+sys.path.insert(0, str(BEATS_PATH))
+from BEATs import BEATs, BEATsConfig  # type: ignore[import]
+
+ARTIFACTS_DIR = Path(__file__).parent.parent / "artifacts"
+
+# Each entry: (repo_id, filename, repo_type)
+MODEL_CHECKPOINTS: dict[str, tuple[str, str, str]] = {
+    "iter3": ("Bencr/beats-checkpoints", "BEATs_iter3_plus_AS2M.pt", "dataset"),
+}
+
+
+def download_checkpoint(name: str, dest_dir: Path = ARTIFACTS_DIR) -> Path:
+    if name not in MODEL_CHECKPOINTS:
+        raise ValueError(
+            f"Unknown checkpoint '{name}'. Available: {list(MODEL_CHECKPOINTS)}"
+        )
+    repo_id, filename, repo_type = MODEL_CHECKPOINTS[name]
+    dest = dest_dir / filename
+    if dest.exists():
+        return dest
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    return Path(
+        hf_hub_download(
+            repo_id=repo_id,
+            filename=filename,
+            repo_type=repo_type,
+            local_dir=str(dest_dir),
+        )
+    )
 
 
 class BEATsClassifier(nn.Module):
-    def __init__(self, checkpoint_path: str | None = None):
+    def __init__(self, checkpoint_name: str | None = None):
         super().__init__()
 
-        if checkpoint_path is not None:
-            checkpoint = torch.load(checkpoint_path, map_location="cpu")
+        if checkpoint_name is not None:
+            checkpoint_path = download_checkpoint(checkpoint_name)
+            checkpoint = torch.load(
+                checkpoint_path, map_location="cpu", weights_only=False
+            )
             cfg = BEATsConfig(checkpoint["cfg"])
             self.beats = BEATs(cfg)
             self.beats.load_state_dict(checkpoint["model"])
         else:
             cfg = BEATsConfig()
+            cfg.input_patch_size = (
+                16  # default from BEATs paper; -1 sentinel requires a checkpoint
+            )
             self.beats = BEATs(cfg)
 
         self.classifier = nn.Linear(cfg.encoder_embed_dim, 1)
@@ -39,7 +83,7 @@ class BEATsClassifier(nn.Module):
 
 if __name__ == "__main__":
     # Random-init smoke test (no checkpoint needed):
-    model = BEATsClassifier()
+    model = BEATsClassifier("iter3")
     x = torch.randn(4, 16_000)  # 4 clips × 1 s at 16 kHz
     out = model(x)
     print(f"input:  {tuple(x.shape)}")
@@ -47,7 +91,7 @@ if __name__ == "__main__":
     assert out.shape == (4,), f"unexpected output shape: {out.shape}"
     print("OK")
 
-    # To run with pretrained weights:
-    #   model = BEATsClassifier(checkpoint_path="path/to/BEATs_iter3_plus_AS2M.pt")
+    # To run with pretrained weights (downloads automatically if not cached):
+    #   model = BEATsClassifier("iter3")
     # The classifier head is randomly initialised even with pretrained weights —
     # fine-tune the full model on your labelled data before running inference.
