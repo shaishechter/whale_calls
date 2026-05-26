@@ -1,0 +1,4 @@
+_target_: model.aug.resample.ResampleAugmentation
+
+from_freq: 2000
+to_freq: 16000

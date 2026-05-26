@@ -1,0 +1,26 @@
+_target_: model.base_model.Model
+
+arch:
+  _target_: model.arch.beats.BEATsClassifier
+  checkpoint_name: iter3
+
+optimizer:
+  _target_: torch.optim.AdamW
+  _partial_: true
+  lr: ${hparams.lr}
+  weight_decay: ${hparams.weight_decay}
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.StepLR
+  _partial_: true
+  step_size: ${hparams.step_size}
+  gamma: ${hparams.gamma}
+
+augmentations:
+  - _target_: model.aug.resample.ResampleAugmentation
+    from_freq: 2000
+    to_freq: 16000
+
+loss:
+  _target_: torch.nn.BCEWithLogitsLoss
+  reduction: none

@@ -1,8 +1,8 @@
 defaults:
+  - hparams: default
   - datamodule: default
-  - model/arch: default
-  - model/scheduler: default
+  - model: ???
   - trainer: default
-  - trainer/logger: mlflow
+  - trainer/logger: wandb
   - trainer/callbacks: default
   - _self_

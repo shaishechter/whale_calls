@@ -26,14 +26,17 @@ class SpectrogramAugmentation(BaseAugmentation):
     def forward(self, batch):
         feature = batch["feature"]
         specs = []
-        if feature.shape[1] == 1:
-            feature = feature[:, 0, :]
+        if feature.dim() <= 2:
             is_cpx = False
-        elif feature.shape[1] == 2:
-            feature = feature[:, 0, :] + 1j * feature[:, 1, :]
-            is_cpx = True
-        else:
-            raise ValueError("Expected 1 or 2 dim input")
+        elif feature.dim() == 3:
+            if feature.shape[1] == 1:
+                feature = feature[:, 0, :]
+                is_cpx = False
+            elif feature.shape[1] == 2:
+                feature = feature[:, 0, :] + 1j * feature[:, 1, :]
+                is_cpx = True
+            else:
+                raise ValueError("Expected 1 or 2 channel input")
         spec = T.spectrogram(
             feature,
             pad=0,

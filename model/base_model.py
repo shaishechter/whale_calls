@@ -65,7 +65,7 @@ class Model(L.LightningModule):
     def compute_loss(self, preds, batch):
         targets = batch["target"]
         loss_vec = self.loss_fn(
-            preds, targets.squeeze(1)
+            preds, targets
         )  # We don't want to squeeze the batch dimension
         if self.loss_reduction == "mean":
             loss = torch.mean(loss_vec)

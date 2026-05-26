@@ -20,7 +20,7 @@ class ResNet18(nn.Module):
         self.model = backbone
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.model(x).squeeze(1)
+        return self.model(x)
 
 
 if __name__ == "__main__":
@@ -28,6 +28,6 @@ if __name__ == "__main__":
     x = torch.randn(4, 1, 128, 128)  # batch of 4 single-channel spectrograms
     out = model(x)
     print(f"input:  {tuple(x.shape)}")
-    print(f"output: {tuple(out.shape)}")  # expect (4,)
-    assert out.shape == (4,), f"unexpected output shape: {out.shape}"
+    print(f"output: {tuple(out.shape)}")  # expect (4, 1)
+    assert out.shape == (4, 1), f"unexpected output shape: {out.shape}"
     print("OK")

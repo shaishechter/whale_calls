@@ -1,0 +1,27 @@
+_target_: model.base_model.Model
+
+arch:
+  _target_: model.arch.resnet18.ResNet18
+  pretrained: false
+
+optimizer:
+  _target_: torch.optim.AdamW
+  _partial_: true
+  lr: ${hparams.lr}
+  weight_decay: ${hparams.weight_decay}
+
+scheduler:
+  _target_: torch.optim.lr_scheduler.StepLR
+  _partial_: true
+  step_size: ${hparams.step_size}
+  gamma: ${hparams.gamma}
+
+augmentations:
+  - _target_: model.aug.spectrogram.SpectrogramAugmentation
+    fs: 500
+    nperseg: 500
+    noverlap: 250
+
+loss:
+  _target_: torch.nn.BCEWithLogitsLoss
+  reduction: none

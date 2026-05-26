@@ -1,0 +1,8 @@
+defaults:
+  - config
+  - override model: resnet18
+  - _self_
+
+trainer:
+  logger:
+    name: resnet18

@@ -1,16 +1,4 @@
-defaults:
-  - _self_
-  - logger: ???
-  - callbacks: ???
-
 _target_: lightning.Trainer
-precision: "32"
-accelerator: gpu
-devices: "${hparams.devices}"
+
 max_epochs: ${hparams.max_epochs}
 log_every_n_steps: 1
-check_val_every_n_epoch: ${hparams.check_val_every_n_epoch}
-deterministic: true
-detect_anomaly: false
-callbacks: ${callbacks}
-logger: ${logger}

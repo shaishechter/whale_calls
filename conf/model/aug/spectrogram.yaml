@@ -1,0 +1,5 @@
+_target_: model.aug.spectrogram.SpectrogramAugmentation
+
+fs: 500
+nperseg: 500
+noverlap: 250

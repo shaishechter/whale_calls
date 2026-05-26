@@ -1,0 +1,8 @@
+defaults:
+  - config
+  - override model: beats
+  - _self_
+
+trainer:
+  logger:
+    name: beats

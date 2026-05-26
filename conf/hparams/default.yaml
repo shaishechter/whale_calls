@@ -1,0 +1,14 @@
+# Optimizer
+lr: 1.0e-3
+weight_decay: 1.0e-4
+
+# StepLR
+step_size: 10
+gamma: 0.1
+
+# CosineAnnealingLR
+T_max: 100
+eta_min: 1.0e-6
+
+# Training
+max_epochs: 50

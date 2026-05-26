@@ -1,0 +1,3 @@
+_target_: model.arch.beats.BEATsClassifier
+
+checkpoint_name: iter3

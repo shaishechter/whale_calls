@@ -23,11 +23,13 @@ if __name__ == "__main__":
     batch = {"feature": torch.randn(B, T), "target": torch.zeros(B)}
 
     aug = ResampleAugmentation(
-        from_freq=16_000, to_freq=8_000, on_train=True, on_val=True, on_predict=True
+        from_freq=16_000,
+        to_freq=8_000,
     )
     out = aug(batch)
     expected_len = T * 8_000 // 16_000
     print(f"input length:  {T}")
+    print(f'output shape: {out["feature"].shape}')
     print(f"output length: {out['feature'].shape[-1]}")  # expect 8000
     assert out["feature"].shape[-1] == expected_len
     print("OK")

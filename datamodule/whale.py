@@ -106,10 +106,10 @@ class WhaleCallsDataModule(L.LightningDataModule):
             AiffDataset(paths=self.val_paths, train=True),
             batch_size=self.batch_size,
             num_workers=self.num_workers,
-            shuffle=True,
+            shuffle=False,
         )
 
-    def test_dataloader(self):
+    def predict_dataloader(self):
         return DataLoader(
             AiffDataset(paths=self.test_paths, train=False),
             batch_size=self.batch_size,
