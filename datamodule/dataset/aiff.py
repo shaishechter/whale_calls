@@ -14,7 +14,7 @@ class AiffDataset(Dataset):
         if self.train:
             self.labels = torch.tensor(
                 [int(Path(path).stem[-1]) for path in self.paths], dtype=torch.float32
-            ).unsqueeze(1)
+            )
         else:
             self.labels = None
 
@@ -23,7 +23,7 @@ class AiffDataset(Dataset):
 
     def __getitem__(self, idx):
         data, sample_rate = sf.read(self.paths[idx], always_2d=True)
-        waveform = torch.from_numpy(data.T).float()
+        waveform = torch.from_numpy(data.squeeze(1)).float()
         if self.train:
             return {"feature": waveform, "target": self.labels[idx]}
         return {

@@ -20,7 +20,7 @@ class ResNet18(nn.Module):
         self.model = backbone
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.model(x)
+        return self.model(x).squeeze(1)  # (B, 1) -> (B,)
 
 
 if __name__ == "__main__":
