@@ -25,5 +25,6 @@ data/
 .vscode/
 
 # Microsoft unlim repo
-unlim/
+unilm/
+wandb/
 model/artifacts
