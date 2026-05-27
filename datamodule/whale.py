@@ -7,6 +7,9 @@ import lightning as L
 from torch.utils.data import DataLoader
 
 from datamodule.dataset.aiff import AiffDataset
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class WhaleCallsDataModule(L.LightningDataModule):
@@ -49,9 +52,10 @@ class WhaleCallsDataModule(L.LightningDataModule):
         if ("KAGGLE_USERNAME" not in os.environ) or (
             "KAGGLE_API_TOKEN" not in os.environ
         ):
-            raise KeyError(
-                "Kaggle API token and usename not set; can't download competition data"
+            logger.info(
+                "Kaggle credentials not found in environment variables. Using kagglehub to prompt for credentials."
             )
+            kagglehub.login()  # will prompt for credentials if not set in env
 
         tmp_path = Path(
             kagglehub.competition_download(
