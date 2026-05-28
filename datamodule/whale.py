@@ -52,11 +52,9 @@ class WhaleCallsDataModule(L.LightningDataModule):
         if ("KAGGLE_USERNAME" not in os.environ) or (
             "KAGGLE_API_TOKEN" not in os.environ
         ):
-            logger.info(
+            raise EnvironmentError(
                 "Kaggle credentials not found in environment variables. Using kagglehub to prompt for credentials."
             )
-            kagglehub.login()  # will prompt for credentials if not set in env
-
         tmp_path = Path(
             kagglehub.competition_download(
                 "the-icml-2013-whale-challenge-right-whale-redux",
