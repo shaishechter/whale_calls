@@ -1,4 +1,6 @@
-_target_: lightning.pytorch.loggers.WandbLogger
+_target_: trainer.logger.wandb_logger.LocalWandbLogger
 
 project: whale_calls
+local: true
+save_dir: ${logs_base_path}/whale_calls
 name: ???

@@ -8,3 +8,4 @@ defaults:
   - _self_
 
 data_base_path: /home/kneidell/data
+logs_base_path: /home/kneidell/Documents/logs
