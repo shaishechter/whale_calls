@@ -1,0 +1,13 @@
+# @package trainer
+callbacks:
+  - _target_: trainer.callbacks.BinaryAccuracyCallback
+    threshold: 0.5
+
+  - _target_: trainer.callbacks.BinaryMetricPlotsCallback
+    threshold: 0.5
+
+  - _target_: trainer.callbacks.BinaryCheckpointCallback
+    monitor: val/loss
+    mode: min
+    save_top_k: 3
+    save_last: true
