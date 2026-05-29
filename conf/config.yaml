@@ -6,3 +6,5 @@ defaults:
   - trainer/logger: wandb
   - trainer/callbacks: default
   - _self_
+
+data_base_path: /home/kneidell/data

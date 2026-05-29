@@ -1,6 +1,6 @@
 _target_: datamodule.whale.WhaleCallsDataModule
 
-base_path: /home/kneidell/Documents/deep_voice
+base_path: ${data_base_path}/whale_calls
 val_frac: 0.15
 batch_size: 32
 num_workers: 4
