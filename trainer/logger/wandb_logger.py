@@ -84,13 +84,13 @@ class LocalWandbLogger(WandbLogger):
         :return: None
         """
         saving_path = Path(self.save_dir) / "training"
-        saving_path.mkdir(exist_ok=True)
+        saving_path.mkdir(exist_ok=True, parents=True)
         os.chmod(saving_path, 0o777)
 
         subdirs = name.split("/")
         for subdir in subdirs:
             saving_path = saving_path / subdir
-            saving_path.mkdir(exist_ok=True)
+            saving_path.mkdir(exist_ok=True, parents=True)
             os.chmod(saving_path, 0o777)
 
         if epoch is None:
