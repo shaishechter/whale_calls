@@ -82,6 +82,10 @@ class WhaleCallsDataModule(L.LightningDataModule):
         )
 
     def get_valid_paths(self, base_path):
+        # Intentionally filters out files that don't match the expected format
+        # (num_frames, channels, samplerate). The Kaggle dataset contains a small
+        # number of malformed clips; dropping them enforces fixed-length batches
+        # without requiring padding. No warning is raised for filtered files.
         valid_paths = (
             pd.Series(list(base_path.glob("*.aif")))
             .apply(self.get_aiff_metadata)

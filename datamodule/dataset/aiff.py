@@ -8,6 +8,18 @@ import tqdm
 
 
 class AiffDataset(Dataset):
+    """
+    Dataset for AIFF audio clips from the ICML 2013 Whale Challenge.
+
+    Labels are extracted from filenames: the last character of the stem is the
+    binary label (e.g. "train_0123_1.aif" → label 1). This follows the Kaggle
+    competition naming convention and will break for differently-named files.
+
+    Args:
+        paths: List of paths to .aif files.
+        train: If True, extract labels from filenames and include them in each
+               returned sample. If False (inference mode), only "feature" is returned.
+    """
     def __init__(self, paths: list[os.PathLike], train: bool = False):
         self.paths = paths
         self.train = train
