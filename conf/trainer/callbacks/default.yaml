@@ -2,9 +2,11 @@
 callbacks:
   - _target_: trainer.callbacks.BinaryAccuracyCallback
     threshold: 0.5
+    log_every_n_epochs: 5
 
   - _target_: trainer.callbacks.BinaryMetricPlotsCallback
     threshold: 0.5
+    log_every_n_epochs: 5
 
   - _target_: trainer.callbacks.BinaryCheckpointCallback
     monitor: val/loss

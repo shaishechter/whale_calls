@@ -9,9 +9,10 @@ class BinaryAccuracyCallback(Callback):
     Collects per-batch preds/targets/losses and logs scalars at epoch end for both train and val.
     """
 
-    def __init__(self, threshold: float = 0.5):
+    def __init__(self, threshold: float = 0.5, log_every_n_epochs: int = 1):
         super().__init__()
         self.threshold = threshold
+        self.log_every_n_epochs = log_every_n_epochs
         self._train_preds = []
         self._train_targets = []
         self._train_losses = []
@@ -40,10 +41,14 @@ class BinaryAccuracyCallback(Callback):
         self._val_losses.append(outputs["loss_vec"].detach().cpu().float().flatten())
 
     def on_train_epoch_end(self, trainer, pl_module):
+        if (trainer.current_epoch + 1) % self.log_every_n_epochs != 0:
+            return
         self._run_epoch_end("train", self._train_preds, self._train_targets, self._train_losses, pl_module)
 
     def on_validation_epoch_end(self, trainer, pl_module):
         if trainer.sanity_checking:
+            return
+        if (trainer.current_epoch + 1) % self.log_every_n_epochs != 0:
             return
         self._run_epoch_end("val", self._val_preds, self._val_targets, self._val_losses, pl_module)
 
